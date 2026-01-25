@@ -1,6 +1,5 @@
-# GrowWiser (GURU.ai) – Copilot Instructions
-
-## Project Overview
+# GrowWiser **personal financial mentor**
+# Project Overview
 GrowWiser is a Streamlit-based **personal financial mentor** application that analyzes spending patterns and simulates future financial impact using transparent rule-based logic (no black-box ML).
 
 **Core mission:** Teach users *why* their financial habits matter by showing compound interest consequences of spending choices.
