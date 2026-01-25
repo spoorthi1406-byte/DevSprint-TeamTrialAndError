@@ -1,97 +1,97 @@
-GrowWiser 💸
-Personal Financial Mentor (Hackathon Project)
-Overview
+# 💸 GrowWiser 
+### Personal Financial Mentor – Hackathon Project
 
-GrowWiser is a Streamlit-based personal financial mentor that helps users understand their spending habits and see how daily financial decisions impact long-term wealth.
+---
 
-Instead of acting like a digital passbook, GrowWiser focuses on explanation, guidance, and future impact using transparent financial logic.
+## 📌 Overview
+**GrowWiser** is a Streamlit-based **personal financial mentor** that helps users understand *why* their financial habits matter by showing the **long-term impact of daily spending decisions**.
 
-Problem
+Unlike traditional expense trackers or digital passbooks, GrowWiser focuses on **explanation, habit correction, and future impact** using transparent, rule-based financial logic.
 
-Most financial apps:
+---
 
-Show numbers, not meaning
+## ❓ Problem Statement
+Most existing financial apps:
+- Show numbers, not meaning
+- Track expenses but don’t explain habits
+- Give generic advice
+- Ignore long-term consequences
 
-Track spending but don’t explain habits
+Users know **what** they spent, but not **whether it was healthy or harmful**.
 
-Give generic advice
+---
 
-Don’t show long-term consequences
+## 💡 Solution
+GrowWiser goes beyond tracking.
 
-Users know what they spent, but not whether it was good or bad.
+It analyzes income, expenses, investments, and debt to:
+- Evaluate spending quality
+- Detect risky financial habits
+- Simulate future impact using compound interest
+- Provide clear, goal-oriented recommendations
 
-Solution
+All insights are generated using **simple financial mathematics** — no black-box AI.
 
-GrowWiser analyzes monthly income, expenses, investments, and debt to:
+---
 
-Evaluate spending quality
+## ✨ Key Features
+- **Spending Quality Analysis**  
+  *(Needs vs Wants vs Investments vs Debt)*
 
-Detect risky financial habits
+- **Financial Health Score (0–100)**  
+  Transparent, explainable scoring based on ratios
 
-Simulate future impact using compound interest
+- **Future Impact Mapping**  
+  Shows opportunity loss or gain over 10 years
 
-Provide clear, goal-oriented recommendations
+- **Mentor Mode**  
+  Personalized guidance and habit-based insights
 
-All insights are generated using rule-based financial logic, not black-box AI.
+- **Tax Estimation**  
+  Based on Budget 2025 (New Regime)
 
-Key Features
+- **Goal-Based Financial Planning**
 
-Spending Quality Analysis (Needs vs Wants vs Investments vs Debt)
+---
 
-Financial Health Score (0–100) with clear explanations
+## ⚙️ Tech Stack
+- **Python**
+- **Streamlit** – UI & app framework
+- **Pandas** – data handling
+- **Plotly** – interactive visualizations
 
-Future Impact Mapping using compound interest
+---
 
-Mentor Mode with personalized guidance
+## 🧠 How It Works
+1. User logs in (demo authentication)
+2. Enters monthly financial details
+3. App categorizes spending into financial buckets
+4. Ratios and health score are calculated
+5. Future impact and recommendations are generated
 
-Tax Estimation (Budget 2025 – New Regime)
+---
 
-Goal-Based Financial Planning
+## 🧪 Design Principles
+- Rule-based, explainable logic
+- No machine learning or predictions
+- Focus on financial literacy and behavior change
+- Built as a realistic MVP for future scaling
 
-Tech Stack
+---
 
-Python
+## ⚠️ Disclaimer
+GrowWiser is an **educational decision-support tool** and does not replace professional financial advice.
 
-Streamlit – UI & app framework
+---
 
-Pandas – data handling
+## 🚀 Future Scope
+- Bank transaction integration
+- Persistent user profiles
+- Mobile-first frontend (React)
+- Backend APIs (Node.js)
+- Advanced goal tracking and analytics
 
-Plotly – interactive charts
+---
 
-How It Works (High Level)
-
-User logs in (demo authentication)
-
-Enters monthly financial details
-
-App categorizes spending and calculates ratios
-
-Health score and insights are generated
-
-Future impact and recommendations are shown
-
-Design Principles
-
-Transparent and explainable logic
-
-No machine learning or black-box predictions
-
-Focus on financial literacy and habit correction
-
-Built as an MVP suitable for real-world extension
-
-Disclaimer
-
-GrowWiser is an educational decision-support tool and does not provide professional financial advice.
-
-Future Scope
-
-Bank transaction integration
-
-Persistent user profiles
-
-Mobile-first frontend (React)
-
-Backend services (Node.js / APIs)
-
-Personalized long-term goal tracking
+## 🏁 Hackathon Note
+This project was built as part of a hackathon to demonstrate how **financial intelligence and habit awareness** can be layered on top of basic financial data.
