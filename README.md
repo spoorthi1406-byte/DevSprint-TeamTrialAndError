@@ -94,8 +94,8 @@ GrowWiser is an **educational decision-support tool** and does not replace profe
 ---
 
 ## 🏁 Hackathon Note
-This project was built as part of a hackathon to demonstrate how **financial intelligence and habit awareness** can be layered on top of basic financial data.
-##Team 17 : **Trial and Error** 
-Spoorthi T
-Padmashree KC 
-Manvith Mahesh Hegde 
+This project was built as part of a hackathon to demonstrate how **financial intelligence and habit awareness** can be layered on top of basic financial data."\n"
+Team 17 : **Trial and Error** 
+Spoorthi T,
+Padmashree KC ,
+Manvith Mahesh Hegde.
