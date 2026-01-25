@@ -6,7 +6,7 @@ import plotly.express as px
 # PAGE CONFIG
 # =========================================================
 st.set_page_config(
-    page_title="GURU.ai – Financial Mentor",
+    page_title="GrowWiser 💸 - Personal Financial Mentor",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -82,10 +82,10 @@ def is_valid_email(email):
 # =========================================================
 if st.session_state.page == "login":
 
-    st.title("GURU.ai")
+    st.title("GrowWiser 💸")
     st.subheader("A Personal Financial Mentor")
 
-    st.markdown("### Login / Sign-Up (Demo Only)")
+    st.markdown("### Log-in")
 
     name = st.text_input("Name")
     email = st.text_input("Email")
@@ -107,7 +107,7 @@ if st.session_state.page == "login":
                 st.session_state.page = "dashboard"
                 st.rerun()
 
-    st.caption("⚠️ Demo authentication. No data is stored.")
+    
 
 # =========================================================
 # DASHBOARD
@@ -157,31 +157,48 @@ else:
 
     # ---------------- HEALTH SCORE ----------------
     score = 100
-    if s_rate < 20:
-        score -= 20
-    if wants_ratio > 0.30:
-        score -= 15
-    if investment_ratio < 0.10:
-        score -= 20
-    if debt_ratio > 30:
-        score -= 30
-    ##score = max(score, 0)
-
+    if debt ==0 and savings== 0 and needs == 0 and wants == 0 and investments== 0:
+        debt_ratio = 0
+        needs_ratio =0
+        s_rate =0
+        wants_ratio =0
+        investment_ratio =0
+        score=0
+    
+    
+    else:
+        if s_rate < 20:
+            score -= 20
+        if wants_ratio > 0.30:
+            score -= 15
+        if investment_ratio < 0.10:
+            score -= 20
+        if debt_ratio > 30:
+            score -= 30
+            ##score = max(score, 0)
+    
     investment_consistency = min(months_invested / 12, 1)
     score += int(investment_consistency * 15)
     score = min(score, 100)
 
 # =========================================================
 
+
+# =========================================================
+
     # ---------------- NAV ----------------
-    n1, n2, n3, n4 = st.columns(4)
+    n1, n2, n3, n4, n5, n6 = st.columns(6)
     if n1.button("📊 Overview"):
         st.session_state.view = "overview"
     if n2.button("🔮 Future Impact Mapping"):
         st.session_state.view = "Future Impact Mapping"
-    if n3.button("🧠 Grow Wiser Mentor Mode"):
-        st.session_state.view = "Grow Wiser Mentor Mode"
-    if n4.button("🚪 Logout"):
+    if n3.button("🧠 Mentor Mode"):
+        st.session_state.view = "Mentor Mode"
+    if n4.button("💰 Tax Estimation"):
+        st.session_state.view = "💰 Tax Estimation"
+    if n5.button("🎯 Goal Based Empire Plan"):
+        st.session_state.view = "Goal Based Empire Plan"
+    if n6.button("🚪 Logout"):
         st.session_state.clear()
         st.rerun()
 
@@ -249,12 +266,67 @@ else:
 
         st.success(
             "Small monthly habits compound into massive future outcomes."
+        ) 
+        
+    # =====================================================
+    #Feature 4: ESTIMATE TAX
+    # =====================================================
+    elif st.session_state.view == "💰 Tax Estimation":
+        st.subheader("💰 Tax Estimation")
+        annual_income = income * 12
+        tax = 0
+        st.markdown("### 🧾 Income Tax Estimator (Budget 2025 – New Regime)"
         )
 
+        if annual_income >= 400000:
+            slabs = [
+                (400000, 0.00),
+            (800000, 0.05),
+            (1200000, 0.10),
+            (1600000, 0.15),
+            (2000000, 0.20),
+            (2400000, 0.25),
+            (float("inf"), 0.30),
+            ]
+
+            tax = 0
+            previous_limit = 0
+
+            for limit, rate in slabs:
+                if annual_income > previous_limit:
+                    taxable_amount = min(annual_income, limit) - previous_limit
+                    tax += taxable_amount * rate
+                    previous_limit = limit
+                else:
+                     break
+
+            st.info(f"Estimated Income Tax: ₹{tax:,.0f}")
+
+            eff_rate = (tax / annual_income) * 100
+            st.caption(f"Effective Tax Rate: {eff_rate:.2f}%")
+        else:
+            st.info("Please enter a valid annual income to estimate tax.")
+
+
     # =====================================================
-    #Feature 4: INSIGHTS + RECOMMENDATIONS + MENTOR MODE
+    #Feature 5: HEALTHY GOAL BASED EMPIRE PLAN
     # =====================================================
-    elif st.session_state.view == "Grow Wiser Mentor Mode":
+    elif st.session_state.view == "Goal Based Empire Plan":
+        st.subheader("🎯 Goal Based Empire Plan")
+        st.markdown(
+            """
+            1. **Emergency Fund**: Save at least 6 months of expenses in a liquid fund.
+            2. **Debt Management**: Prioritise paying off high-interest debt first.
+            3. **Investment Strategy**: Allocate at least 15% of income to diversified investments.
+            4. **Retirement Planning**: Start a retirement fund and contribute regularly.
+            5. **Regular Reviews**: Review financial goals and progress every 6 months.
+            """
+        )
+        
+    # =====================================================
+    #Feature 6: INSIGHTS + RECOMMENDATIONS + MENTOR MODE
+    # =====================================================
+    elif st.session_state.view == "Mentor Mode":
 
         st.subheader("🧠 Financial Risk & Guidance")
 
