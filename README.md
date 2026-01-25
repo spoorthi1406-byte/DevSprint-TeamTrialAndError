@@ -30,53 +30,64 @@ GrowWiser is a Streamlit-based **personal financial mentor** application that an
 
 ---
 
-## Project-Specific Patterns & Conventions
+## How It Works
 
-### 1. **Expense Categorization (Needs/Wants/Investments/Debt)**
-Every feature branches from this taxonomy. When adding features:
-- Map new expense inputs to one of these 4 categories in the "CORE CALCULATIONS" section
-- Compute its ratio as `(category_amount / income) * 100 if income > 0 else 0`
-- Reference the ratio in health score penalties or mentor recommendations
+### 1. **Tell Us Your Money**
+Log in and enter your monthly income and spending across four categories:
+- **Needs:** Rent, transport (non-negotiable essentials)
+- **Wants:** Food delivery, lifestyle (fun but flexible)
+- **Investments:** SIP, mutual funds (building wealth)
+- **Debt:** Credit card EMI (obligations to clear)
 
-### 2. **Health Score Design (Penalty-Based, 0-100)**
-Thresholds (hardcoded in lines 172-180):
-- Savings rate < 20% → -20 points
-- Wants ratio > 30% → -15 points  
-- Investment ratio < 10% → -20 points
-- Debt ratio > 30% → -30 points
-- Investment consistency bonus: `(months_invested / 12) * 15` (capped at 15)
-- Final capped at 0–100
+### 2. **Get Your Health Score**
+A single number (0-100) that tells you if your financial habits are healthy. It considers:
+- Are you saving enough? (target: 20%+)
+- Is lifestyle inflation eating you? (danger: >30% of income)
+- Are you investing for tomorrow? (goal: 10%+)
+- Is debt under control? (risk alert: >30% of income)
 
-When proposing score tweaks: preserve penalty/bonus symmetry; always cap final result.
+### 3. **See Your Future**
+**"What if?"** scenarios show the compound impact of your choices:
+- Reduce food delivery by ₹2,000/month → ₹5,40,000 more in 10 years
+- Start a ₹5,000/month SIP → ₹9,20,000 in your pocket
+- Cut lifestyle spending → Accelerate financial independence by 2-3 years
 
-### 3. **Future Value Simulation (10-Year Impact)**
-- Uses SIP formula (monthly compounding): `P * ((1+r)^n - 1) / r` where r = annual_rate/12, n = years*12
-- Applied to "wants" and "investments" as opportunity cost/gain
-- **Always assume 10 years** unless user specifies; hardcoded in function default
-
-### 4. **Recommendations Engine (Contextual Logic)**
-Three tiers (see lines 235–247):
-1. **If low investment ratio:** Push SIP (₹2,000 starter recommendation)
-2. **If high wants ratio:** Reduce discretionary (specific: food delivery + lifestyle)
-3. **If low savings rate:** 20% target
-4. **If high debt ratio:** Warn HIGH RISK; focus on debt reduction
-
-Add new recommendations by:
-- Computing a new ratio from expense categories
-- Adding an `if` condition that appends to `recommendations` list
-- Displaying as `st.info(r)` for consistency
-
-### 5. **Mentor Message (Empathetic Narrative)**
-- Reflects the primary financial problem detected (not all problems simultaneously)
-- Hierarchy: investment → discretionary spending → savings discipline → praise
-- Keeps message singular & motivational (see lines 250–255)
+### 4. **Get Mentor Guidance**
+Clear, contextual advice based on YOUR numbers:
+- Low investment ratio? → "Start with ₹2,000 SIP in an index fund"
+- High discretionary spending? → "Reduce food delivery & subscriptions"
+- Weak savings discipline? → "Automate transfers; target 20% of income"
 
 ---
 
-## Developer Workflows
+## Features at a Glance
 
-### Local Setup
+| Feature | What It Does |
+|---------|-------------|
+| **Overview** | Visual breakdown of income vs. expenses; health score |
+| **Future Impact Mapping** | Compound interest simulator; see cost of habits over 10 years |
+| **Mentor Mode** | Risk alerts, personalized recommendations, motivational guidance |
+| **Income Tax Estimator** | India's 2025 tax slabs; know your effective tax rate |
+
+---
+
+## Tech Stack
+
+- **Frontend:** Streamlit (Python, responsive UI)
+- **Visualization:** Plotly (interactive charts)
+- **Logic:** Pure math (no black-box AI)
+- **Currency:** Indian Rupees (₹)
+
+---
+
+## Getting Started
+
+### Setup (2 minutes)
+
 ```bash
+# Clone & navigate
+cd GrowWise
+
 # Create virtual environment
 python -m venv venv
 source venv/Scripts/activate  # Windows: venv\Scripts\activate
@@ -84,7 +95,7 @@ source venv/Scripts/activate  # Windows: venv\Scripts\activate
 # Install dependencies
 pip install streamlit pandas plotly
 
-# Run app
+# Run the app
 streamlit run app.py
 # Opens at http://localhost:8501
 ```
