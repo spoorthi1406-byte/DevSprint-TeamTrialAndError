@@ -1,5 +1,5 @@
 # DevSprint-TeamTrialAndError
-Repository for DevSprint Hackathon project
-print("Hello hackathon")
-print("Finally guysss")
-print("I can seeee")
+
+Repository for DevSprint Hackathon project.
+
+Team 17
