@@ -1,164 +1,97 @@
-# GrowWiser **personal financial mentor**
-# Project Overview
-GrowWiser is a Streamlit-based **personal financial mentor** application that analyzes spending patterns and simulates future financial impact using transparent rule-based logic (no black-box ML).
+GrowWiser 💸
+Personal Financial Mentor (Hackathon Project)
+Overview
 
-**Core mission:** Teach users *why* their financial habits matter by showing compound interest consequences of spending choices.
+GrowWiser is a Streamlit-based personal financial mentor that helps users understand their spending habits and see how daily financial decisions impact long-term wealth.
 
----
+Instead of acting like a digital passbook, GrowWiser focuses on explanation, guidance, and future impact using transparent financial logic.
 
-## Architecture & Data Flow
+Problem
 
-### Session-Based State Management
-- Uses Streamlit's `session_state` to track:
-  - `page`: "login" → "dashboard" (authentication → main app)
-  - `view`: "overview", "Future Impact Mapping", "Grow Wiser Mentor Mode" (within dashboard)
-- **Pattern:** All navigation uses `st.session_state` + `st.rerun()` (no multi-file pages)
+Most financial apps:
 
-### Input → Calculation → Presentation Pipeline
-1. **User inputs** (left-aligned columns in dashboard row): income, 7 expense categories, investment months, ROI rate
-2. **Core calculations** (lines 158-166):
-   - Categorize expenses: `needs = rent + transport`, `wants = food + lifestyle`, `investments = sip + mutual_funds`, `debt = credit_card_emi`
-   - Compute ratios as **percentages of income** for comparative health scoring
-3. **Health Score** (lines 172-180): Penalty-based scoring (100 → deduct for poor ratios → add for investment consistency)
-4. **Three presentation views** use calculated ratios to drive personalized recommendations
+Show numbers, not meaning
 
-### Key Functions (Pure Financial Logic)
-- `savings_rate(savings, income)`: Returns percentage; guards division-by-zero
-- `sip_future_value(P, annual_rate, years=10)`: Compound interest for monthly contributions (SIP formula: compound monthly)
-- `is_valid_email(email)`: Restricted to `allowed_domains` list; validates local part (alphanumeric only)
+Track spending but don’t explain habits
 
----
+Give generic advice
 
-## How It Works
+Don’t show long-term consequences
 
-### 1. **Tell Us Your Money**
-Log in and enter your monthly income and spending across four categories:
-- **Needs:** Rent, transport (non-negotiable essentials)
-- **Wants:** Food delivery, lifestyle (fun but flexible)
-- **Investments:** SIP, mutual funds (building wealth)
-- **Debt:** Credit card EMI (obligations to clear)
+Users know what they spent, but not whether it was good or bad.
 
-### 2. **Get Your Health Score**
-A single number (0-100) that tells you if your financial habits are healthy. It considers:
-- Are you saving enough? (target: 20%+)
-- Is lifestyle inflation eating you? (danger: >30% of income)
-- Are you investing for tomorrow? (goal: 10%+)
-- Is debt under control? (risk alert: >30% of income)
+Solution
 
-### 3. **See Your Future**
-**"What if?"** scenarios show the compound impact of your choices:
-- Reduce food delivery by ₹2,000/month → ₹5,40,000 more in 10 years
-- Start a ₹5,000/month SIP → ₹9,20,000 in your pocket
-- Cut lifestyle spending → Accelerate financial independence by 2-3 years
+GrowWiser analyzes monthly income, expenses, investments, and debt to:
 
-### 4. **Get Mentor Guidance**
-Clear, contextual advice based on YOUR numbers:
-- Low investment ratio? → "Start with ₹2,000 SIP in an index fund"
-- High discretionary spending? → "Reduce food delivery & subscriptions"
-- Weak savings discipline? → "Automate transfers; target 20% of income"
+Evaluate spending quality
 
----
+Detect risky financial habits
 
-## Features at a Glance
+Simulate future impact using compound interest
 
-| Feature | What It Does |
-|---------|-------------|
-| **Overview** | Visual breakdown of income vs. expenses; health score |
-| **Future Impact Mapping** | Compound interest simulator; see cost of habits over 10 years |
-| **Mentor Mode** | Risk alerts, personalized recommendations, motivational guidance |
-| **Income Tax Estimator** | India's 2025 tax slabs; know your effective tax rate |
+Provide clear, goal-oriented recommendations
 
----
+All insights are generated using rule-based financial logic, not black-box AI.
 
-## Tech Stack
+Key Features
 
-- **Frontend:** Streamlit (Python, responsive UI)
-- **Visualization:** Plotly (interactive charts)
-- **Logic:** Pure math (no black-box AI)
-- **Currency:** Indian Rupees (₹)
+Spending Quality Analysis (Needs vs Wants vs Investments vs Debt)
 
----
+Financial Health Score (0–100) with clear explanations
 
-## Getting Started
+Future Impact Mapping using compound interest
 
-### Setup (2 minutes)
+Mentor Mode with personalized guidance
 
-```bash
-# Clone & navigate
-cd GrowWise
+Tax Estimation (Budget 2025 – New Regime)
 
-# Create virtual environment
-python -m venv venv
-source venv/Scripts/activate  # Windows: venv\Scripts\activate
+Goal-Based Financial Planning
 
-# Install dependencies
-pip install streamlit pandas plotly
+Tech Stack
 
-# Run the app
-streamlit run app.py
-# Opens at http://localhost:8501
-```
+Python
 
-### Testing During Development
-- Use **mock credentials** in login (any name + valid email domain)
-- Session state persists during Streamlit reruns (Ctrl+R restarts clean)
-- Adjust `.env` for API keys if bank integration is added later
+Streamlit – UI & app framework
 
-### Key Entry Points for New Features
-1. **Dashboard inputs row** (lines 135–147): Add new `number_input` in new column
-2. **Core calculations** (lines 158–166): Add category math
-3. **Health score logic** (lines 172–180): Add penalty/bonus
-4. **View conditional blocks** (lines 197–254): Add new elif for new view
-5. **Recommendations** (lines 235–247): Add new condition
+Pandas – data handling
 
----
+Plotly – interactive charts
 
-## Critical Integration Points & Constraints
+How It Works (High Level)
 
-### Email Validation (Hardcoded Whitelist)
-- `allowed_domains = ["gmail.com", "outlook.com", "yahoo.com", "company.com"]`
-- Local part restricted to alphanumeric (line 77)
-- **Why:** Demo prevents spam; production will need relaxing or external auth
+User logs in (demo authentication)
 
-### Styling (Global CSS in unsafe_allow_html)
-- Animated gradient background in every session
-- Uses `[data-testid="stAppViewContainer"]` for Streamlit v1.x compatibility
-- Modify in lines 32–45; test background attachment on mobile
+Enters monthly financial details
 
-### No Persistence
-- Session data cleared on logout; no database yet
-- Future: Bank API integration requires persistent user profiles
+App categorizes spending and calculates ratios
 
-### Currency Hardcoded to Indian Rupees (₹)
-- All `number_input` steps, metrics, and recommendations assume INR
-- Change currency symbol in ~8 places if localizing
+Health score and insights are generated
 
----
+Future impact and recommendations are shown
 
-## Common Modifications & Examples
+Design Principles
 
-### Add a New Expense Category
-1. Add input column: `new_expense = c8.number_input("New Expense (₹)", min_value=0, step=500)`
-2. Assign to category: `wants += new_expense` (or `needs`, `investments`)
-3. Recalculate: `total_expense = needs + wants + investments + debt`
-4. Add health check in Mentor Mode: `if new_expense > X: recommendations.append("...")`
+Transparent and explainable logic
 
-### Adjust Health Score Thresholds
-- Modify penalty values in lines 174–179 (lower negative value = less severe)
-- Test: run with extreme inputs (₹0 or ₹1M income) to verify bounds
+No machine learning or black-box predictions
 
-### Add a New Dashboard View
-1. Add button in nav (lines 189–194): `if n5.button("🆕 View Name"): st.session_state.view = "View Name"`
-2. Add elif block: `elif st.session_state.view == "View Name":`
-3. Use existing ratios/calculations; avoid new complex logic without testing
+Focus on financial literacy and habit correction
 
----
+Built as an MVP suitable for real-world extension
 
-## Testing Checklist for New Features
-- [ ] Email validation rejects invalid domains & spaces
-- [ ] All expense inputs sum correctly (trace total_expense calculation)
-- [ ] Health score stays within 0–100 range
-- [ ] Future value formula handles annual_rate = 0 (no division error)
-- [ ] Recommendations list builds without duplicates
-- [ ] Session state persists across Streamlit rerun
-- [ ] Logout clears session state completely
+Disclaimer
+
+GrowWiser is an educational decision-support tool and does not provide professional financial advice.
+
+Future Scope
+
+Bank transaction integration
+
+Persistent user profiles
+
+Mobile-first frontend (React)
+
+Backend services (Node.js / APIs)
+
+Personalized long-term goal tracking
