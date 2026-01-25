@@ -1,35 +1,154 @@
-# GrowWiser – Personal Financial Mentor
+# GrowWiser (GURU.ai) – Copilot Instructions
 
-## Problem
-Most financial apps show numbers but fail to explain what those numbers mean.
-Users know how much they spend, but not whether their habits are healthy or harmful in the long run.
-The need for guidance and mentorship in personal finance is essential for long-term wealth accumulation and growth.
+## Project Overview
+GrowWiser is a Streamlit-based **personal financial mentor** application that analyzes spending patterns and simulates future financial impact using transparent rule-based logic (no black-box ML).
 
-## Solution
-GrowWiser acts as a personal financial mentor.
-It analyses spending quality, detects risky habits, simulates future impact, and provides clear, actionable guidance using basic financial mathematics.
-The application is user-friendly and focuses on identifying habits and factors that negatively affect net worth.
+**Core mission:** Teach users *why* their financial habits matter by showing compound interest consequences of spending choices.
 
-## Key Features
-- Spending Quality Analyzer (Needs vs Wants vs Investments)
-- Habit Detection Engine
-- Future Impact Simulator
-- Explainable Financial Health Score
-- Hidden Money Leakage Detection
-- Goal-Oriented Recommendations
-- Mentor Mode for financial thinking
+---
 
-## Logic Used
-All insights are generated using transparent, rule-based financial logic and compound interest mathematics.
-There is no black-box AI involved.
+## Architecture & Data Flow
 
-## Tech Stack
-- Python
-- Streamlit (UI & MVP)
-- Plotly (Visualization)
+### Session-Based State Management
+- Uses Streamlit's `session_state` to track:
+  - `page`: "login" → "dashboard" (authentication → main app)
+  - `view`: "overview", "Future Impact Mapping", "Grow Wiser Mentor Mode" (within dashboard)
+- **Pattern:** All navigation uses `st.session_state` + `st.rerun()` (no multi-file pages)
 
-## Future Scope
-- Bank transaction integration
-- Persistent user profiles
-- Mobile-first UI
-- React + Node.js architecture
+### Input → Calculation → Presentation Pipeline
+1. **User inputs** (left-aligned columns in dashboard row): income, 7 expense categories, investment months, ROI rate
+2. **Core calculations** (lines 158-166):
+   - Categorize expenses: `needs = rent + transport`, `wants = food + lifestyle`, `investments = sip + mutual_funds`, `debt = credit_card_emi`
+   - Compute ratios as **percentages of income** for comparative health scoring
+3. **Health Score** (lines 172-180): Penalty-based scoring (100 → deduct for poor ratios → add for investment consistency)
+4. **Three presentation views** use calculated ratios to drive personalized recommendations
+
+### Key Functions (Pure Financial Logic)
+- `savings_rate(savings, income)`: Returns percentage; guards division-by-zero
+- `sip_future_value(P, annual_rate, years=10)`: Compound interest for monthly contributions (SIP formula: compound monthly)
+- `is_valid_email(email)`: Restricted to `allowed_domains` list; validates local part (alphanumeric only)
+
+---
+
+## Project-Specific Patterns & Conventions
+
+### 1. **Expense Categorization (Needs/Wants/Investments/Debt)**
+Every feature branches from this taxonomy. When adding features:
+- Map new expense inputs to one of these 4 categories in the "CORE CALCULATIONS" section
+- Compute its ratio as `(category_amount / income) * 100 if income > 0 else 0`
+- Reference the ratio in health score penalties or mentor recommendations
+
+### 2. **Health Score Design (Penalty-Based, 0-100)**
+Thresholds (hardcoded in lines 172-180):
+- Savings rate < 20% → -20 points
+- Wants ratio > 30% → -15 points  
+- Investment ratio < 10% → -20 points
+- Debt ratio > 30% → -30 points
+- Investment consistency bonus: `(months_invested / 12) * 15` (capped at 15)
+- Final capped at 0–100
+
+When proposing score tweaks: preserve penalty/bonus symmetry; always cap final result.
+
+### 3. **Future Value Simulation (10-Year Impact)**
+- Uses SIP formula (monthly compounding): `P * ((1+r)^n - 1) / r` where r = annual_rate/12, n = years*12
+- Applied to "wants" and "investments" as opportunity cost/gain
+- **Always assume 10 years** unless user specifies; hardcoded in function default
+
+### 4. **Recommendations Engine (Contextual Logic)**
+Three tiers (see lines 235–247):
+1. **If low investment ratio:** Push SIP (₹2,000 starter recommendation)
+2. **If high wants ratio:** Reduce discretionary (specific: food delivery + lifestyle)
+3. **If low savings rate:** 20% target
+4. **If high debt ratio:** Warn HIGH RISK; focus on debt reduction
+
+Add new recommendations by:
+- Computing a new ratio from expense categories
+- Adding an `if` condition that appends to `recommendations` list
+- Displaying as `st.info(r)` for consistency
+
+### 5. **Mentor Message (Empathetic Narrative)**
+- Reflects the primary financial problem detected (not all problems simultaneously)
+- Hierarchy: investment → discretionary spending → savings discipline → praise
+- Keeps message singular & motivational (see lines 250–255)
+
+---
+
+## Developer Workflows
+
+### Local Setup
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/Scripts/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install streamlit pandas plotly
+
+# Run app
+streamlit run app.py
+# Opens at http://localhost:8501
+```
+
+### Testing During Development
+- Use **mock credentials** in login (any name + valid email domain)
+- Session state persists during Streamlit reruns (Ctrl+R restarts clean)
+- Adjust `.env` for API keys if bank integration is added later
+
+### Key Entry Points for New Features
+1. **Dashboard inputs row** (lines 135–147): Add new `number_input` in new column
+2. **Core calculations** (lines 158–166): Add category math
+3. **Health score logic** (lines 172–180): Add penalty/bonus
+4. **View conditional blocks** (lines 197–254): Add new elif for new view
+5. **Recommendations** (lines 235–247): Add new condition
+
+---
+
+## Critical Integration Points & Constraints
+
+### Email Validation (Hardcoded Whitelist)
+- `allowed_domains = ["gmail.com", "outlook.com", "yahoo.com", "company.com"]`
+- Local part restricted to alphanumeric (line 77)
+- **Why:** Demo prevents spam; production will need relaxing or external auth
+
+### Styling (Global CSS in unsafe_allow_html)
+- Animated gradient background in every session
+- Uses `[data-testid="stAppViewContainer"]` for Streamlit v1.x compatibility
+- Modify in lines 32–45; test background attachment on mobile
+
+### No Persistence
+- Session data cleared on logout; no database yet
+- Future: Bank API integration requires persistent user profiles
+
+### Currency Hardcoded to Indian Rupees (₹)
+- All `number_input` steps, metrics, and recommendations assume INR
+- Change currency symbol in ~8 places if localizing
+
+---
+
+## Common Modifications & Examples
+
+### Add a New Expense Category
+1. Add input column: `new_expense = c8.number_input("New Expense (₹)", min_value=0, step=500)`
+2. Assign to category: `wants += new_expense` (or `needs`, `investments`)
+3. Recalculate: `total_expense = needs + wants + investments + debt`
+4. Add health check in Mentor Mode: `if new_expense > X: recommendations.append("...")`
+
+### Adjust Health Score Thresholds
+- Modify penalty values in lines 174–179 (lower negative value = less severe)
+- Test: run with extreme inputs (₹0 or ₹1M income) to verify bounds
+
+### Add a New Dashboard View
+1. Add button in nav (lines 189–194): `if n5.button("🆕 View Name"): st.session_state.view = "View Name"`
+2. Add elif block: `elif st.session_state.view == "View Name":`
+3. Use existing ratios/calculations; avoid new complex logic without testing
+
+---
+
+## Testing Checklist for New Features
+- [ ] Email validation rejects invalid domains & spaces
+- [ ] All expense inputs sum correctly (trace total_expense calculation)
+- [ ] Health score stays within 0–100 range
+- [ ] Future value formula handles annual_rate = 0 (no division error)
+- [ ] Recommendations list builds without duplicates
+- [ ] Session state persists across Streamlit rerun
+- [ ] Logout clears session state completely
